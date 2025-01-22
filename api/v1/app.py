@@ -21,7 +21,7 @@ cors = CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
 def index():
     """ index page"""
 
-    return render_template('login.html')
+    return render_template('index.html')
 
 @app.route('/login')
 def login_sign_in():
@@ -29,8 +29,14 @@ def login_sign_in():
 
     return render_template('login.html')
 
+@app.route('/personal_info')
+def personal_info():
+    """ personal information page"""
+
+    return render_template('personal_info.html')
+
 @app.route('/claim')
-def make_claim():
+def claims():
     """ claim reporting page"""
 
     return render_template('claims.html')
