@@ -24,7 +24,7 @@ def user_dashboard():
     route that leads the user to the user admin dashboard
     """
 
-    return render_template('user_dashboard.html')
+    return render_template('index.html')
 
 @app_views.route('/register', methods=['POST'], strict_slashes=False)
 def register():
@@ -47,6 +47,7 @@ def register():
         user = AUTH.register_user(first_name=first_name, last_name=last_name, email=email,
                            national_id=national_id, phone_number=phone_number, password=password)
         session['user_id'] = user.id
+        session['first_name'] = user.first_name
         session['user_email'] = user.email
 
         if db.is_email_for_admin(user.email):
@@ -78,6 +79,7 @@ def login():
 
     if user:
         session['user_id'] = user.id
+        session['first_name'] = user.first_name
         session['user_email'] = user.email
 
         if db.is_email_for_admin(user.email):
