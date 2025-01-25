@@ -1,30 +1,36 @@
 """ API routes for the claims model """
 
+from api.v1.config import Config
 from api.v1.views import app_views
 from models.db import DB
 from models.claims import Claims
-from flask import Flask, flash, jsonify, request, make_response, abort, redirect, session
+from flask import Flask, flash, jsonify, request, make_response, abort, redirect, session, render_template
 from datetime import date, datetime
+from werkzeug.utils import secure_filename
+import os
 
 db = DB()
 
-def auto_review_claim(claim, required_documents=1, max_claim=100000):
+def auto_review_claim(claim_date,claim_amount, documents, required_documents=1, max_claim=500000):
     """
     Automatically reviews a claim and returns a status to help
     with the review process
     """
 
     "ensure claim is submitted within 7 days of date of service"
-    days_since_service = (date.today() - claim.claim_date).days
+    if isinstance(claim_date, str):
+        claim.claim_date = datetime.strptime(claim_date, '%Y-%m-%d').date()
+
+    days_since_service = (date.today() - claim_date).days
     if days_since_service > 7:
         return 'Denied', 'Claim must be submitted within 7 days of the date of service'
 
     "check maximum claim amount"
-    if claim.claim_amount > max_claim:
+    if int(claim_amount) > max_claim:
         return 'Denied', 'Claim amount exceeds the maximum allowed'
     
     "check the number of uploaded documents"
-    document_num = len(claim.documents.split(',')) if claim.documents else 0
+    document_num = len(documents.split(',')) if documents else 0
     if document_num < required_documents:
         return 'Denied', f'Minimum {required_documents} documents are required to process claim'
     
@@ -35,38 +41,55 @@ def auto_review_claim(claim, required_documents=1, max_claim=100000):
 def upload_claims():
     """ saves claim reports in the databse"""
 
-    data = request.get_json()
-    if not data:
-        return jsonify({'error': 'Missing data'}), 400
-
     user_id = session.get('user_id')
     if not user_id:
         return jsonify({'error': 'User not authenticated'}), 401
 
-    claim_date = data.get('claim_date')
-    claim_type = data.get('claim_type')
-    claim_amount = data.get('claim_amount')
-    documents = data.get('documents')
+    claim_date = request.form['claim_date']
+    claim_type = request.form['claim_type']
+    claim_amount = request.form['claim_amount']
+
+    print(f"Received claim_date: {claim_date}, claim_type: {claim_type}, claim_amount: {claim_amount}")
 
     if not claim_date or not claim_type or not claim_amount:
-        return jsonify({'error': 'Missing required claim details'}), 400
-
-    documents_str = ','.join(documents) if isinstance(documents, list) else None
-
+        return render_template('claims.html', error_message="Missing claim details")
+    
     try:
         claim_date = datetime.strptime(claim_date, '%m-%d-%Y').date()
     except ValueError:
-        return jsonify({'error': 'Invalid claim date format'}), 400
+        return render_template('claims.html', error_message="Invalid date format. Please use MM-DD-YYYY")
 
-    claim = db.save_claim(user_id=user_id, claim_date=claim_date, claim_type=claim_type, claim_amount=claim_amount, documents=documents_str)
+    if 'files[]' not in request.files:
+        return render_template('claims.html', error_message="No files provided")
+    
+    documents = request.files.getlist('files[]')
+    document_paths = []
+    UPLOAD_FOLDER = Config.UPLOAD_FOLDER
+
+    if not os.path.exists(UPLOAD_FOLDER):
+        os.makedirs(UPLOAD_FOLDER)
+
+    for document in documents:
+        if document:
+            filename = secure_filename(document.filename)
+            file_path = os.path.join(UPLOAD_FOLDER, filename)
+            document.save(file_path)
+            document_paths.append(file_path)
+
+    document_str = (',').join(document_paths)
+
+    status, message = auto_review_claim(claim_date, claim_amount, ','.join(document_paths))
+    if status == 'Denied':
+        return render_template('claims.html', error_message=message)
+
+    claim = db.save_claim(user_id=user_id, claim_date=claim_date, claim_type=claim_type, claim_amount=claim_amount, documents=document_str)
     if claim:
-        status, message = auto_review_claim(claim)
         claim.status = status
         claim.review_message = message
         db.save()
-        return jsonify({'message': 'Claim successfully submitted!', 'status': status, 'review_message': message}), 200
+        return render_template('claims.html', message="Submitted Successfully. Pending Review")
     else:
-        return jsonify({'error': 'Error saving the claim'}), 500
+        return render_template('claims.html', error_message="Error saving claim. Try Again")
     
 @app_views.route('/claims/user', methods=['GET'], strict_slashes=False)
 def get_claim_by_id(user_id):
@@ -77,7 +100,7 @@ def get_claim_by_id(user_id):
     user_id = session.get('user_id')
     if not user_id:
         return jsonify({'errror': 'User not authenticated'}), 401
-    claims = DB.get_claims_by_user(user_id)
+    claims = db.get_claims_by_user(user_id)
     if not claims:
         return jsonify({'error': f'No claims found for user ID {user_id}'}), 404
     
@@ -89,19 +112,19 @@ def get_claims_by_type(claim_type):
     gets all the claims under a certain type
     """
 
-    claims = DB.get_claims_by_type(claim_type)
+    claims = db.get_claims_by_type(claim_type)
     if not claims:
         return jsonify({'error': f'No claims found for the type {claim_type}'}), 404
     
     return jsonify([claim.to_dict() for claim in claims]), 200
 
-@app_views.route('/claims', methods=['GET'], strict_slashes=False)
+@app_views.route('/claims/users', methods=['GET'], strict_slashes=False)
 def get_all_claims():
     """
     gets all the claims made
     """
 
-    claims = DB.get_all_claims()
+    claims = db.get_all_claims()
     if not claims:
         return jsonify({'error': 'No claims found'}), 404
     
