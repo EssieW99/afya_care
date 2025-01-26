@@ -1,0 +1,58 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claim History</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/claim_update.css') }}">
+</head>
+<body>
+    <div class="container mt-4">
+        <h2 class="mb-4 text-center text-decoration-underline">{{ session['first_name'] }}'s Claim History.</h2>
+        {% if claims %}
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>Claim ID</th>
+                            <th>Claim Date</th>
+                            <th>Claim Type</th>
+                            <th>Claim Amount</th>
+                            <th>Status</th>
+                            <th>Message</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for claim in claims %}
+                            <tr>
+                                <td>{{ claim.id }}</td>
+                                <td>{{ claim.claim_date.strftime('%Y-%m-%d') }}</td>
+                                <td>{{ claim.claim_type }}</td>
+                                <td>{{ claim.claim_amount }}</td>
+                                <td>
+                                    <span 
+                                        class="badge {% if claim.status == 'accepted' %}bg-success{% elif claim.status == 'denied' %}bg-danger{% else %}bg-secondary{% endif %}">
+                                        {{ claim.status }}
+                                    </span>
+                                </td>
+                                <td>{{ claim.review_message }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="alert alert-info text-center" role="alert">
+                No claims to display.
+            </div>
+        {% endif %}
+        <div class="d-flex justify-content-end mb-3">
+            <a href="{{ url_for('index') }}" class="btn btn-secondary">Home</a>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
