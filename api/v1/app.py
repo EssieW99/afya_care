@@ -18,7 +18,7 @@ cors = CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
 def index():
     """ index page"""
 
-    return render_template('index.html')
+    return render_template('login.html')
 
 @app.route('/login')
 def login_sign_in():
