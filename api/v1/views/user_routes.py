@@ -100,17 +100,16 @@ def login():
         return jsonify({'error': 'Invalid credentials'}), 401
 
 
-@app_views.route('/logout', methods=['DELETE'], strict_slashes=False)
+@app_views.route('/logout', methods=['GET'], strict_slashes=False)
 def logout():
     """
     logs out a user
     """
 
-    user_id = session.get('user_id')
+    user_id = session.pop('user_id', None)
     if user_id:
-        session.pop('user_id', None)
         flash('Log Out Successful!')
-        return redirect('/')
+        return redirect('/login')
     else:
         flash('Not logged in')
         return redirect('/')
