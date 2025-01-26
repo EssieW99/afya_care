@@ -10,13 +10,20 @@ from flask import Flask, flash, jsonify, request, make_response, abort, redirect
 AUTH = Auth()
 db = DB()
 
-@app_views.route('/admin/dashboard', methods=['GET'], strict_slashes=False)
+@app_views.route('/admin/claims', methods=['GET'], strict_slashes=False)
 def admin_dashboard():
     """
-    route that leads to the admin dashboard
+    route to be used in the admin dashboard to handle viewing of pending claim reports 
     """
 
-    return render_template('admin_dashboard.html')
+    claim_type = request.args.get('claim_type')
+
+    if claim_type:
+        claims = db.get_claims_by_type(claim_type)
+    else:
+        claims = db.get_all_claims()
+
+    return render_template('admin_dashboard.html', claims=claims)
 
 @app_views.route('/user/dashboard', methods=['GET'], strict_slashes=False)
 def user_dashboard():
