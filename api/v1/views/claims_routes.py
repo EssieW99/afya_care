@@ -4,7 +4,7 @@ from api.v1.config import Config
 from api.v1.views import app_views
 from models.db import DB
 from models.claims import Claims
-from flask import Flask, flash, jsonify, request, make_response, abort, redirect, session, render_template, send_from_directory
+from flask import Flask, flash, jsonify, request, make_response, abort, redirect, session, render_template, send_from_directory, url_for
 from datetime import date, datetime
 from werkzeug.utils import secure_filename
 import os
@@ -19,20 +19,20 @@ def auto_review_claim(claim_date,claim_amount, documents, required_documents=1, 
 
     "ensure claim is submitted within 7 days of date of service"
     if isinstance(claim_date, str):
-        claim.claim_date = datetime.strptime(claim_date, '%Y-%m-%d').date()
+        claim_date = datetime.strptime(claim_date, '%Y-%m-%d').date()
 
     days_since_service = (date.today() - claim_date).days
     if days_since_service > 7:
-        return 'Denied', 'Claim must be submitted within 7 days of the date of service'
+        return 'denied', 'Claim must be submitted within 7 days of the date of service'
 
     "check maximum claim amount"
     if int(claim_amount) > max_claim:
-        return 'Denied', 'Claim amount exceeds the maximum allowed'
+        return 'denied', 'Claim amount exceeds the maximum allowed'
     
     "check the number of uploaded documents"
     document_num = len(documents.split(',')) if documents else 0
     if document_num < required_documents:
-        return 'Denied', f'Minimum {required_documents} documents are required to process claim'
+        return 'denied', f'Minimum {required_documents} documents are required to process claim'
     
     "default flag for manual review"
     return 'Pending', 'Claim requires further review'
@@ -79,7 +79,7 @@ def upload_claims():
     document_str = (',').join(document_paths)
 
     status, message = auto_review_claim(claim_date, claim_amount, ','.join(document_paths))
-    if status == 'Denied':
+    if status == 'denied':
         return render_template('claims.html', error_message=message)
 
     claim = db.save_claim(user_id=user_id, claim_date=claim_date, claim_type=claim_type, claim_amount=claim_amount, documents=document_str)
@@ -146,3 +146,19 @@ def serve_file(filename):
 
     filename = os.path.basename(filename)
     return send_from_directory(UPLOAD_FOLDER, filename)
+
+@app_views.route('/user/claims', methods=['GET'], strict_slashes=False)
+def get_claim_update():
+    """
+    A route that retrieves all claims made by a user
+    """
+
+    user_id = session.get('user_id')
+    print(user_id)
+    if not user_id:
+        return redirect(url_for('login_sign_in'))
+
+    claims = db.get_updated_claims_by_user(user_id)
+
+    return render_template('claim_update.html', claims=claims)
+
