@@ -147,6 +147,14 @@ class DB:
 
         session = self._session
         return session.query(Claims).filter_by(user_id=user_id).all()
+
+    def get_claim_by_id(self, id):
+        """
+        retrieves a claim based of its ID
+        """
+        
+        session = self._session
+        return session.query(Claims).filter_by(id=id).first()
     
     def get_claims_by_type(self, claim_type):
         """
@@ -154,7 +162,7 @@ class DB:
         """
 
         session = self._session
-        return session.query(Claims).filter_by(claim_type=claim_type).all()
+        return session.query(Claims).filter_by(claim_type=claim_type, status='Pending').all()
     
     def get_all_claims(self):
         """
@@ -162,4 +170,26 @@ class DB:
         """
 
         session = self._session
-        return session.query(Claims).all()
+        return session.query(Claims).filter_by(status='Pending').all()
+
+    def save_claim_update(self, claim_id, new_status, new_message):
+        """
+        saves the updated status and review_message of a pending claim report
+        """
+
+        session = self._session
+
+        claim = session.query(Claims).filter_by(id=claim_id).first()
+        if not claim:
+            return jsonify({'error': 'Claim not found'}), 404
+
+        claim.status = new_status
+        claim.review_message = new_message
+
+        try:
+            session.commit()
+            return claim
+        except Exception as e:
+            session.rollback()
+            print(f"Error saving claim status update: {e}")
+            return None
