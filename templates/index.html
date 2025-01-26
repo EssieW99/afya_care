@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AFYA CARE</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-white bg-white sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img class="logo" src="{{ url_for('static', filename='images/logo.jpg') }}" alt="AFYA CARE LOGO">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a href="{{ url_for('login_sign_in') }}" class="nav-link">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#about" class="nav-link">About Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#why_us" class="nav-link">Why Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#contact_us" class="nav-link">Contact Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ url_for('app_views.logout') }}" class="nav-link">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <section id="home" class="min-vh-100 d-flex align-items-center text-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h1 class="text-uppercase text-primary fw-semibold display-2">AFYA CARE</h1>
+                    <h5 class="text-secondary mb-4 mt-3">WITH YOU AT YOUR TIME OF NEED</h5>
+                    <div>
+                        <a href="{{ url_for('claims') }}" class="btn btn-light ms-2">Upload a Claim</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="about" class="section-padding">
+        <div class="container text-center">
+            <h2 class="fw-bold text-decoration-underline">About Us.</h2>
+            <p class="mt-3 mb-5">
+                At <strong>AFYA CARE</strong>, we prioritize your health and well-being by providing a comprehensive range of services tailored to meet your needs:
+            </p>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="benefit-box p-4 shadow-sm bg-white rounded">
+                        <i class="ri-stethoscope-line display-4 text-primary"></i>
+                        <h5 class="mt-3">Outpatient Services</h5>
+                        <p>Quality care for everyday health concerns and minor illnesses.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="benefit-box p-4 shadow-sm bg-white rounded">
+                        <i class="ri-hospital-line display-4 text-primary"></i>
+                        <h5 class="mt-3">Inpatient Services</h5>
+                        <p>Comprehensive care during your hospital stay.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="benefit-box p-4 shadow-sm bg-white rounded">
+                        <i class="ri-heart-pulse-line display-4 text-primary"></i>
+                        <h5 class="mt-3">Maternity Care</h5>
+                        <p>Specialized care for mothers and newborns.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="benefit-box p-4 shadow-sm bg-white rounded">
+                        <i class="ri-surgical-mask-line display-4 text-primary"></i>
+                        <h5 class="mt-3">Surgical Services</h5>
+                        <p>Advanced surgical care by experienced professionals.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="benefit-box p-4 shadow-sm bg-white rounded">
+                        <i class="ri-mental-health-line display-4 text-primary"></i>
+                        <h5 class="mt-3">Mental Healthcare</h5>
+                        <p>Support for emotional well-being and mental health.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="benefit-box p-4 shadow-sm bg-white rounded">
+                        <i class="ri-tooth-line display-4 text-primary"></i>
+                        <h5 class="mt-3">Oral Health Services</h5>
+                        <p>Comprehensive dental care for the whole family.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="why_us" class="section-padding">
+        <div class="container text-center">
+            <h2 class="mb-4 fw-bold text-decoration-underline">Why Us? </h2>
+            <p class="mb-5">
+                We prioritize your health and well-being. 
+                Our mission is to provide seamless and reliable health insurance services to ensure you are covered during life's unexpected moments.
+            </p>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <i class="ri-heart-pulse-line display-4 text-primary"></i>
+                            <h5 class="card-title mt-3">Compassionate Care</h5>
+                            <p class="card-text">We ensure you receive the best medical care with minimal hassle.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <i class="ri-shield-user-line display-4 text-success"></i>
+                            <h5 class="card-title mt-3">Trusted Coverage</h5>
+                            <p class="card-text">Our plans are designed to protect you when you need it the most.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <i class="ri-customer-service-2-line display-4 text-warning"></i>
+                            <h5 class="card-title mt-3">24/7 Support</h5>
+                            <p class="card-text">We are here for you anytime, anywhere.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="contact_us" class="section-padding">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h2 class="section-title">Contact Us</h2>
+                    <p>We would love to hear from you! Reach out to us through the details below:</p>
+                    <ul class="list-unstyled">
+                        <li><i class="ri-map-pin-line"></i> Address: 678 Muindi Mbingu Street, Nairobi, Kenya</li>
+                        <li><i class="ri-phone-line"></i> Phone: +254-796-765-456</li>
+                        <li><i class="ri-mail-line"></i> Email: cutomer_care@afyacare.com</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+</body>
+</html>

@@ -1,0 +1,131 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+body {
+    font-family: 'Poppins', sans-serif;
+    line-height: 1.6;
+    background-color: #f8f9fa;
+}
+
+.navbar {
+    box-shadow: 0px 15px 25px rgba(0,0,0,0.08);
+}
+.navbar-brand img {
+    width: 50px;
+}
+.navbar-nav .nav-link {
+    font-weight: 500;
+    color: #333;
+    transition: color 0.3s;
+}
+.navbar-nav .nav-link:hover {
+    color: #007bff;
+}
+
+#home {
+    background: url(/static/images/home2.jpg) no-repeat center center/cover;
+}
+#home h1 {
+
+    font-size: 3rem;
+    font-weight: bold;
+}
+#home .btn {
+    padding: 10px 20px;
+    font-size: 1.1rem;
+}
+
+#about {
+    padding: 60px 0;
+    background: linear-gradient(135deg, #B3E5FC, #FFECB3, #FFFFFF);
+    color: #333;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+#about h2 {
+    font-size: 2.5rem;
+    color: #333;
+}
+
+.benefit-box {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.benefit-box:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.benefit-box i {
+    font-size: 3rem;
+    color: #007bff;
+}
+
+.benefit-box h5 {
+    font-weight: bold;
+    margin-top: 15px;
+    color: #333;
+}
+
+.benefit-box p {
+    color: #555;
+    font-size: 0.95rem;
+}
+
+#why_us .card {
+    border: none;
+    border-radius: 10px;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+#why_us .card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+#why_us .card i {
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
+
+#why_us {
+    padding: 60px 0;
+    background: linear-gradient(135deg, #B3E5FC 70%, #FFECB3 20%, #FFFFFF 10%); 
+    color: #333;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+#contact_us {
+    background: linear-gradient(to bottom right, #e3f2fd, #fff);
+    padding: 60px 0;
+}
+
+#contact_us .section-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    position: relative;
+    display: inline-block;
+}
+
+#contact_us .section-title::after {
+    content: '';
+    display: block;
+    width: 50%;
+    height: 3px;
+    background-color: #2196f3;
+    margin-top: 5px;
+}
+
+#contact_us .form-label {
+    font-weight: bold;
+}
+
+#contact_us .btn-primary {
+    background-color: #2196f3;
+    border-color: #2196f3;
+}
+
+#contact_us .btn-primary:hover {
+    background-color: #1976d2;
+    border-color: #1976d2;
+}
