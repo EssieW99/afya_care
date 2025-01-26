@@ -140,9 +140,9 @@ class DB:
         session.commit()
         return new_claim
     
-    def get_claims_by_user(self, user_id):
+    def get_updated_claims_by_user(self, user_id):
         """
-        gets all the claims madeby a user
+        gets all the claims made by a user
         """
 
         session = self._session
@@ -181,7 +181,7 @@ class DB:
 
         claim = session.query(Claims).filter_by(id=claim_id).first()
         if not claim:
-            return jsonify({'error': 'Claim not found'}), 404
+            print("Claim not found")
 
         claim.status = new_status
         claim.review_message = new_message
