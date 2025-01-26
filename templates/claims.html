@@ -1,0 +1,57 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claim Report Submission.</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/claims.css') }}">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Submit Your Claim</h2>
+        {% if message %}
+            <div class="alert alert-success" role="alert">
+                {{ message }}
+            </div>
+        {% elif error_message %}
+            <div class="alert alert-danger" role="alert">
+                {{ error_message }}
+            </div>
+        {% endif %}
+        <form action="http://127.0.0.1:5000/api/v1/claims" method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="claim_date">Claim Date:</label>
+                <input type="text" class="form-control" id="claim_date" name="claim_date" placeholder="MM-DD-YYYY">
+            </div>
+            <div class="form-group">
+                <label for="claim_type">Claim Type:</label>
+                <select class="form-control" id="claim_type" name="claim_type">
+                    <option value="">Select claim type</option>
+                    <option value="Outpatient">Outpatient</option>
+                    <option value="Inpatient">Inpatient</option>
+                    <option value="Maternity">Maternity</option>
+                    <option value="Surgical">Surgical</option>
+                    <option value="Mental Healthcare">Mental Healthcare</option>
+                    <option value="Oral Health">Oral Health</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="claim_amount">Claim Amount:</label>
+                <input type="number" class="form-control" id="claim_amount" name="claim_amount" placeholder="Enter claim amount">
+            </div>
+            <div class="form-group">
+                <label for="files">Upload Files:</label>
+                <input type="file" class="form-control-file" id="files" name="files[]" multiple>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <a href="{{ url_for('index') }}" class="btn btn-secondary">Home</a>
+        </form>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
+
