@@ -26,12 +26,6 @@ def login_sign_in():
 
     return render_template('login.html')
 
-@app.route('/personal_info')
-def personal_info():
-    """ personal information page"""
-
-    return render_template('personal_info.html')
-
 @app.route('/claim')
 def claims():
     """ claim reporting page"""
