@@ -4,7 +4,7 @@ from api.v1.config import Config
 from api.v1.views import app_views
 from models.db import DB
 from models.claims import Claims
-from flask import Flask, flash, jsonify, request, make_response, abort, redirect, session, render_template
+from flask import Flask, flash, jsonify, request, make_response, abort, redirect, session, render_template, send_from_directory
 from datetime import date, datetime
 from werkzeug.utils import secure_filename
 import os
@@ -106,26 +106,43 @@ def get_claim_by_id(user_id):
     
     return jsonify([claim.to_dict() for claim in claims]), 200
 
-@app_views.route('/claims/<string:claim_type>', methods=['GET'], strict_slashes=False)
-def get_claims_by_type(claim_type):
+@app_views.route('/admin/claims/update', methods=['POST'], strict_slashes=False)
+def update_pending_claims():
     """
-    gets all the claims under a certain type
+    Updates the status of a claim report to the database
     """
 
-    claims = db.get_claims_by_type(claim_type)
-    if not claims:
-        return jsonify({'error': f'No claims found for the type {claim_type}'}), 404
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "Missing data"}), 400
+
+    claim_id = data.get('claim_id')
+    new_status = data.get('status')
+    new_message = data.get('message')
+
+    print(f"Received message: {new_message}")
+
+    if new_status not in ['accepted', 'denied']:
+            return jsonify({'error': 'Invalid status'}), 400
+    if not new_message:
+        return jsonify({'error': 'Message is required'}), 400
+
+    updated_claim = db.save_claim_update(claim_id, new_status, new_message)
+    print(f'{updated_claim.review_message}')
     
-    return jsonify([claim.to_dict() for claim in claims]), 200
+    if updated_claim:
+        return jsonify({'message': 'claim updated successfully'}), 200
+    else:
+        return jsonify({'error': 'Failed to update claim'}), 500
 
-@app_views.route('/claims/users', methods=['GET'], strict_slashes=False)
-def get_all_claims():
+
+@app_views.route('/files/<path:filename>', methods=['GET'], strict_slashes=False)
+def serve_file(filename):
     """
-    gets all the claims made
+    serves file to the dashboard securely
     """
 
-    claims = db.get_all_claims()
-    if not claims:
-        return jsonify({'error': 'No claims found'}), 404
-    
-    return jsonify([claim.to_dict() for claim in claims])
+    UPLOAD_FOLDER = Config.UPLOAD_FOLDER
+
+    filename = os.path.basename(filename)
+    return send_from_directory(UPLOAD_FOLDER, filename)
