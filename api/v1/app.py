@@ -26,6 +26,12 @@ def login_sign_in():
 
     return render_template('login.html')
 
+@app.route('/home')
+def home():
+    "home page"
+
+    return render_template('index.html')
+
 @app.route('/claim')
 def claims():
     """ claim reporting page"""
